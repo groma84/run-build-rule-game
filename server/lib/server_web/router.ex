@@ -1,6 +1,8 @@
 defmodule ServerWeb.Router do
   use ServerWeb, :router
 
+  import ServerWeb.PlayerAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule ServerWeb.Router do
     plug :put_root_layout, {ServerWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_player
   end
 
   pipeline :api do
@@ -39,5 +42,37 @@ defmodule ServerWeb.Router do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: ServerWeb.Telemetry
     end
+  end
+
+  ## Authentication routes
+
+  scope "/", ServerWeb do
+    pipe_through [:browser, :redirect_if_player_is_authenticated]
+
+    get "/players/register", PlayerRegistrationController, :new
+    post "/players/register", PlayerRegistrationController, :create
+    get "/players/log_in", PlayerSessionController, :new
+    post "/players/log_in", PlayerSessionController, :create
+    get "/players/reset_password", PlayerResetPasswordController, :new
+    post "/players/reset_password", PlayerResetPasswordController, :create
+    get "/players/reset_password/:token", PlayerResetPasswordController, :edit
+    put "/players/reset_password/:token", PlayerResetPasswordController, :update
+  end
+
+  scope "/", ServerWeb do
+    pipe_through [:browser, :require_authenticated_player]
+
+    get "/players/settings", PlayerSettingsController, :edit
+    put "/players/settings", PlayerSettingsController, :update
+    get "/players/settings/confirm_email/:token", PlayerSettingsController, :confirm_email
+  end
+
+  scope "/", ServerWeb do
+    pipe_through [:browser]
+
+    delete "/players/log_out", PlayerSessionController, :delete
+    get "/players/confirm", PlayerConfirmationController, :new
+    post "/players/confirm", PlayerConfirmationController, :create
+    get "/players/confirm/:token", PlayerConfirmationController, :confirm
   end
 end
