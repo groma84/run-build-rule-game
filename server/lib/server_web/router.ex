@@ -75,4 +75,12 @@ defmodule ServerWeb.Router do
     post "/players/confirm", PlayerConfirmationController, :create
     get "/players/confirm/:token", PlayerConfirmationController, :confirm
   end
+
+  scope "/auth", ServerWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+    post "/:provider/callback", AuthController, :callback
+  end
 end

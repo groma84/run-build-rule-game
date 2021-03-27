@@ -1,0 +1,4 @@
+<h1>Log in with username / password</h1>
+<%= form_tag @callback_url, method: "post" do %>
+<input class="button" type="submit" value="Login" />
+<% end %>

@@ -20,6 +20,7 @@ defmodule Server.MixProject do
   def application do
     [
       mod: {Server.Application, []},
+      #applications: [:ueberauth_google],
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -49,7 +50,9 @@ defmodule Server.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
 
-      {:phx_gen_auth, "~> 0.6.0"}
+      {:phx_gen_auth, "~> 0.6.0"},
+      {:ueberauth, "~> 0.6"},
+      {:ueberauth_google, "~> 0.10"}
     ]
   end
 
