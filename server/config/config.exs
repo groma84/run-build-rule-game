@@ -28,7 +28,7 @@ config :phoenix, :json_library, Jason
 
 config :ueberauth, Ueberauth,
   providers: [
-    google: {Ueberauth.Strategy.Google, [default_scope: "https://www.googleapis.com/auth/fitness.activity.read"]}
+    google: {Ueberauth.Strategy.Google, [default_scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/fitness.activity.read"]}
   ]
 
 # Import environment specific config. This must remain at the bottom

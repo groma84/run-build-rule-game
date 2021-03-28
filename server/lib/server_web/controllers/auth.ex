@@ -10,13 +10,17 @@ defmodule ServerWeb.AuthController do
   end
 
   @spec callback(%{:assigns => map, optional(any) => any}, any) :: any
-  def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
+  def callback(%{assigns: %{ueberauth_failure: fails}} = conn, _params) do
+    IO.inspect(fails, label: "ueberauth_callback for failed")
+
     conn
     |> put_flash(:error, "Failed to authenticate.")
     |> redirect(to: "/")
   end
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
-    IO.inspect(auth, label: "ueberauth_callback")
+    IO.inspect(auth, label: "ueberauth_callback for success")
+
+    conn
   end
 end
